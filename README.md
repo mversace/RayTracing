@@ -5,7 +5,7 @@
 ## 编译
 1. 平台 windows
 2. C++ 20
-3. ![image](https://user-images.githubusercontent.com/10512526/138131904-7558c6df-1b2f-4965-86a5-5fde3dd2edab.png)
+![image](https://user-images.githubusercontent.com/10512526/138131904-7558c6df-1b2f-4965-86a5-5fde3dd2edab.png)
 
 
 
