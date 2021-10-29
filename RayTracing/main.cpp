@@ -58,7 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     UpdateWindow(hWnd);
 
     // renderer init
-    SoftRender::initRenderer(width, height, hWnd);
+    RayRender::initRenderer(width, height, hWnd);
 
     // 1.4 start message loop
     MSG msg = {};
@@ -71,11 +71,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
         }
         else
         {
-            SoftRender::update(hWnd);
+            RayRender::update(hWnd);
         }
     }
 
-    SoftRender::shutDown();
+    RayRender::shutDown();
     return (int)msg.wParam;
 }
 

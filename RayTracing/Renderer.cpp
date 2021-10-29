@@ -48,12 +48,20 @@ RayMath::Vec3 color(const Ray& r, const World& world)
 	return (1.0f - t) * RayMath::Vec3(1.0f, 1.0f, 1.0f) + t * RayMath::Vec3(0.5f, 0.7f, 1.0f);
 }
 
-namespace SoftRender
+namespace RayRender
 {
 	int g_width = 0;
 	int g_height = 0;
 	// 每个像素的光线数量
 	int ns = 100;
+
+	std::vector<int> pixels;
+	World world;
+	Camera camera;
+
+	// 线程数量
+	int threadCount = 12;
+	// 是否关闭线程
 	bool isShut = false;
 
 
@@ -62,12 +70,10 @@ namespace SoftRender
 	HBITMAP g_oldBm = nullptr;
 	unsigned int* g_frameBuff = nullptr;
 
-	unsigned int bgColor = ((123 << 16) | (195 << 8) | 221);
-
-	void renderer();
+	void renderer(int threadIdx);
 }
 
-void SoftRender::initRenderer(int w, int h, HWND hWnd)
+void RayRender::initRenderer(int w, int h, HWND hWnd)
 {
 	g_width = w;
 	g_height = h;
@@ -84,12 +90,24 @@ void SoftRender::initRenderer(int w, int h, HWND hWnd)
 	// 1.3 选择该bitmap到dc中
 	g_oldBm = (HBITMAP)SelectObject(g_tempDC, g_tempBm);
 	
+	// 做一下随机
+	pixels.resize(g_height * g_width);
+	std::iota(pixels.begin(), pixels.end(), 1);
+	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
+
+	// 初始化场景
+	world.addObject({ RayMath::Vec3(0.0f, 0.0f, -1.0f), 0.5f });
+	world.addObject({ RayMath::Vec3(0.0f, -100.5f, -1.0f), 100.0f });
+
 	// 起个线程开始光线追踪
-	std::thread t(SoftRender::renderer);
-	t.detach();
+	for (int i = 0; i < threadCount; ++i) {
+		std::thread t(RayRender::renderer, i);
+		t.detach();
+	}
 }
 
-void SoftRender::update(HWND hWnd)
+void RayRender::update(HWND hWnd)
 {
 	// present frameBuffer to screen
 	HDC hDC = GetDC(hWnd);
@@ -97,24 +115,12 @@ void SoftRender::update(HWND hWnd)
 	ReleaseDC(hWnd, hDC);
 }
 
-void SoftRender::renderer() {
-	// 做一下随机
-	std::vector<int> pixels(g_height * g_width);
-	std::iota(pixels.begin(), pixels.end(), 1);
-	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
-
-	// 初始化场景
-	World world;
-	world.addObject({ RayMath::Vec3(0.0f, 0.0f, -1.0f), 0.5f });
-	world.addObject({ RayMath::Vec3(0.0f, -100.5f, -1.0f), 100.0f });
-	Camera camera;
-
-	while (pixels.size()) {
-		int idx = pixels.back() - 1;
-		pixels.pop_back();
-		int i = idx / g_width;
-		int j = idx % g_width;
+void RayRender::renderer(int threadIdx)
+{
+	for (int idx = threadIdx; idx < pixels.size(); idx += threadCount) {
+		int curIdx = pixels[idx];
+		int i = curIdx / g_width;
+		int j = curIdx % g_width;
 
 		RayMath::Vec3 col{ 0.0f, 0.0f, 0.0f };
 		for (auto k = 0; k < ns; ++k) {
@@ -130,11 +136,11 @@ void SoftRender::renderer() {
 
 		if (isShut) break;
 
-		g_frameBuff[idx] = rgbtRed << 16 | rgbtGreen << 8 | rgbtBlue;
+		g_frameBuff[curIdx] = rgbtRed << 16 | rgbtGreen << 8 | rgbtBlue;
 	}
 }
 
-void SoftRender::shutDown()
+void RayRender::shutDown()
 {
 	isShut = true;
 	if (g_tempDC)

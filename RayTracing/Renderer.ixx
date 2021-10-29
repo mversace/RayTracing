@@ -4,7 +4,7 @@ module;
 
 export module Renderer;
 
-export namespace SoftRender
+export namespace RayRender
 {
 	// ³õÊ¼»¯äÖÈ¾Æ÷ ÆÁÄ»³¤¿í ÆÁÄ»»º³å
 	void initRenderer(int w, int h, HWND hWnd);

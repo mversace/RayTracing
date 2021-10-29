@@ -1,5 +1,6 @@
 export module RayCamera;
 import Ray;
+import RayMath;
 
 export class Camera{
 public:

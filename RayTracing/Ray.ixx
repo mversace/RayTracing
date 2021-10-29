@@ -3,7 +3,7 @@ import RayMath;
 
 export class Ray {
 public:
-	Ray() = default;
+	Ray() = delete;
 	Ray(const RayMath::Vec3& a, const RayMath::Vec3& b)
 	{
 		A = a;
