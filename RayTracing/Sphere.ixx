@@ -1,20 +1,17 @@
 export module Sphere;
 import <math.h>;
+import <memory>;
 import Ray;
 import RayMath;
-
-export struct HitRec {
-	float t;
-	RayMath::Vec3 p;
-	RayMath::Vec3 normal;
-};
+import Material;
 
 export class Sphere {
 public:
-	Sphere(const RayMath::Vec3& center, float radius)
+	Sphere(const RayMath::Vec3& center, float radius, std::shared_ptr<Material> m)
 	{
 		_center = center;
 		_radius = radius;
+		_matPtr = m;
 	}
 
 	// 判断射线是否与球相交
@@ -42,8 +39,10 @@ public:
 			if (fMin < tmp && tmp < fMax) {
 				rec.t = tmp;
 				rec.p = r.pointAtParameter(tmp);
-				rec.normal = rec.p - _center;
-				rec.normal.normalize();
+				auto normal = rec.p - _center;
+				normal.normalize();
+				rec.setFaceNormal(r, normal);
+				rec.matPtr = _matPtr;
 				return true;
 			}
 
@@ -51,8 +50,10 @@ public:
 			if (fMin < tmp && tmp < fMax) {
 				rec.t = tmp;
 				rec.p = r.pointAtParameter(tmp);
-				rec.normal = rec.p - _center;
-				rec.normal.normalize();
+				auto normal = rec.p - _center;
+				normal.normalize();
+				rec.setFaceNormal(r, normal);
+				rec.matPtr = _matPtr;
 				return true;
 			}
 		}
@@ -63,4 +64,5 @@ public:
 private:
 	RayMath::Vec3 _center;
 	float _radius;
+	std::shared_ptr<Material> _matPtr;
 };

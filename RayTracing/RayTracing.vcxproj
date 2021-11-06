@@ -86,7 +86,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.ixx" />
+    <ClCompile Include="MetalMaterial.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="RayCamera.ixx" />
     <ClCompile Include="RayMath.ixx" />

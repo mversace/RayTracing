@@ -39,5 +39,14 @@
     <ClCompile Include="World.ixx">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="Material.ixx">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="LambertianMaterial.ixx">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="MetalMaterial.ixx">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

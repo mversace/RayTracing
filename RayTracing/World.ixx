@@ -5,6 +5,8 @@ export import Sphere;
 export import Ray;
 export import RayMath;
 export import RayCamera;
+export import LambertianMaterial;
+export import MetalMaterial;
 
 export class World {
 public:

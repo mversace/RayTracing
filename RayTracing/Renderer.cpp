@@ -16,48 +16,22 @@ import World;
 #pragma warning(disable:4005)
 #pragma warning(disable:5106)
 
-inline float randF() {
-	return static_cast<float>(rand()) / RAND_MAX;
-}
 
-RayMath::Vec3 randomInUnitSphere() {
-	// 为了防止找到的点进入了内部
-	RayMath::Vec3 p;
-	do {
-		p = 2.0f * RayMath::Vec3(randF(), randF(), randF()) - RayMath::Vec3(1.0f, 1.0f, 1.0f);
-	} while (p.squaredLength() >= 1.0f);
-
-	return p;
-}
-
-RayMath::Vec3 randomUnitVector() {
-	auto p = randomInUnitSphere();
-	p.normalize();
-	return p;
-}
-
-RayMath::Vec3 randomInHemisphere(const RayMath::Vec3& normal) {
-	RayMath::Vec3 p = randomInUnitSphere();
-	if (RayMath::dot(p, normal) > 0.0) {
-		return p;
-	} else {
-		return -p;
-	}
-}
-
-RayMath::Vec3 color(const Ray& r, const World& world, int depth)
+RayMath::Vec3 rayColor(const Ray& r, const World& world, int depth)
 {
-	HitRec rec = { 0 };
+	HitRec rec;
 
 	if (depth <= 0) {
 		return RayMath::Vec3(0, 0, 0);
 	}
 
 	if (world.hit(r, 0.001f, 1000.0f, rec)) {
-		// 以入射点为中心 获取单位立方体中随机点
-		auto target = rec.p + randomInHemisphere(rec.normal);
-		// 随机点减去入射点 获得随机反射出来的射线 继续参与颜色计算
-		return 0.5f * color(Ray(rec.p, target - rec.p), world, depth - 1);
+		Ray scattered;
+		RayMath::Vec3 attenuation;
+		if (rec.matPtr->scatter(r, rec, attenuation, scattered)) {
+			return attenuation * rayColor(scattered, world, depth - 1);
+		}
+		return RayMath::Vec3(0, 0, 0);
 	}
 
 	RayMath::Vec3 direction = r.direction();
@@ -116,8 +90,15 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
 
 	// 初始化场景
-	world.addObject({ RayMath::Vec3(0.0f, 0.0f, 1.0f), 0.5f });
-	world.addObject({ RayMath::Vec3(0.0f, -100.5f, 1.0f), 100.0f });
+	auto material_ground = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.8f, 0.8f, 0.0f));
+	auto material_center = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.7f, 0.3f, 0.3f));
+	auto material_left = std::make_shared<MetalMaterial>(RayMath::Vec3(0.8f, 0.8f, 0.8f), 0.3f);
+	auto material_right = std::make_shared<MetalMaterial>(RayMath::Vec3(0.8f, 0.6f, 0.2f), 1.0f);
+
+	world.addObject(Sphere(RayMath::Vec3(0.0f, -100.5f, 1.0f), 100.0f, material_ground));
+	world.addObject(Sphere(RayMath::Vec3(0.0f, 0.0f, 1.0f), 0.5f, material_center));
+	world.addObject(Sphere(RayMath::Vec3(-1.0f, 0.0f, 1.0f), 0.5f, material_left));
+	world.addObject(Sphere(RayMath::Vec3(1.0f, 0.0f, 1.0f), 0.5f, material_right));
 
 	// 起个线程开始光线追踪
 	for (int i = 0; i < threadCount; ++i) {
@@ -146,10 +127,10 @@ void RayRender::renderer(int threadIdx)
 
 		RayMath::Vec3 col{ 0.0f, 0.0f, 0.0f };
 		for (auto k = 0; k < ns; ++k) {
-			auto u = static_cast<float>(j + randF()) / static_cast<float>(g_width - 1);
-			auto v = static_cast<float>(i + randF()) / static_cast<float>(g_height - 1);
+			auto u = static_cast<float>(j + RayMath::randF()) / static_cast<float>(g_width - 1);
+			auto v = static_cast<float>(i + RayMath::randF()) / static_cast<float>(g_height - 1);
 			auto r = camera.getRay(u, v);
-			col += color(r, world, maxDepth);
+			col += rayColor(r, world, maxDepth);
 		}
 		col /= float(ns);
 		auto rgbtRed = static_cast<unsigned char>(255.99 * col.x());
