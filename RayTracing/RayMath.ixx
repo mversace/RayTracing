@@ -38,6 +38,8 @@ export namespace RayMath {
 	inline Vec3 operator-(const Vec3& v1, const Vec3& v2) { return Vec3(v1.e[0] - v2.e[0], v1.e[1] - v2.e[1], v1.e[2] - v2.e[2]); }
 	inline Vec3 operator/=(Vec3& v1, float t) { v1.e[0] /= t; v1.e[1] /= t; v1.e[2] /= t; return v1; }
 
+	inline Vec3 operator-(const Vec3& v1) { return Vec3(-v1.e[0], -v1.e[1], -v1.e[2]); }
+
 	inline float dot(const Vec3& v1, const Vec3& v2)
 	{
 		return v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2];

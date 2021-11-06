@@ -22,7 +22,6 @@ inline float randF() {
 
 RayMath::Vec3 randomInUnitSphere() {
 	// 为了防止找到的点进入了内部
-
 	RayMath::Vec3 p;
 	do {
 		p = 2.0f * RayMath::Vec3(randF(), randF(), randF()) - RayMath::Vec3(1.0f, 1.0f, 1.0f);
@@ -31,14 +30,34 @@ RayMath::Vec3 randomInUnitSphere() {
 	return p;
 }
 
-RayMath::Vec3 color(const Ray& r, const World& world)
+RayMath::Vec3 randomUnitVector() {
+	auto p = randomInUnitSphere();
+	p.normalize();
+	return p;
+}
+
+RayMath::Vec3 randomInHemisphere(const RayMath::Vec3& normal) {
+	RayMath::Vec3 p = randomInUnitSphere();
+	if (RayMath::dot(p, normal) > 0.0) {
+		return p;
+	} else {
+		return -p;
+	}
+}
+
+RayMath::Vec3 color(const Ray& r, const World& world, int depth)
 {
 	HitRec rec = { 0 };
-	if (world.hit(r, 0.01f, 1000.0f, rec)) {
+
+	if (depth <= 0) {
+		return RayMath::Vec3(0, 0, 0);
+	}
+
+	if (world.hit(r, 0.001f, 1000.0f, rec)) {
 		// 以入射点为中心 获取单位立方体中随机点
-		auto target = rec.p + rec.normal + randomInUnitSphere();
+		auto target = rec.p + randomInHemisphere(rec.normal);
 		// 随机点减去入射点 获得随机反射出来的射线 继续参与颜色计算
-		return 0.5f * color(Ray(rec.p, target - rec.p), world);
+		return 0.5f * color(Ray(rec.p, target - rec.p), world, depth - 1);
 	}
 
 	RayMath::Vec3 direction = r.direction();
@@ -60,7 +79,7 @@ namespace RayRender
 	Camera camera;
 
 	// 线程数量
-	int threadCount = 12;
+	constexpr int threadCount = 12;
 	// 是否关闭线程
 	bool isShut = false;
 
@@ -97,8 +116,8 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
 
 	// 初始化场景
-	world.addObject({ RayMath::Vec3(0.0f, 0.0f, -1.0f), 0.5f });
-	world.addObject({ RayMath::Vec3(0.0f, -100.5f, -1.0f), 100.0f });
+	world.addObject({ RayMath::Vec3(0.0f, 0.0f, 1.0f), 0.5f });
+	world.addObject({ RayMath::Vec3(0.0f, -100.5f, 1.0f), 100.0f });
 
 	// 起个线程开始光线追踪
 	for (int i = 0; i < threadCount; ++i) {
@@ -117,6 +136,9 @@ void RayRender::update(HWND hWnd)
 
 void RayRender::renderer(int threadIdx)
 {
+	// 反射次数
+	int maxDepth = 50;
+
 	for (int idx = threadIdx; idx < pixels.size(); idx += threadCount) {
 		int curIdx = pixels[idx];
 		int i = curIdx / g_width;
@@ -127,7 +149,7 @@ void RayRender::renderer(int threadIdx)
 			auto u = static_cast<float>(j + randF()) / static_cast<float>(g_width - 1);
 			auto v = static_cast<float>(i + randF()) / static_cast<float>(g_height - 1);
 			auto r = camera.getRay(u, v);
-			col += color(r, world);
+			col += color(r, world, maxDepth);
 		}
 		col /= float(ns);
 		auto rgbtRed = static_cast<unsigned char>(255.99 * col.x());
