@@ -1,7 +1,8 @@
-export module Ray;
-import RayMath;
+#pragma once
 
-export class Ray {
+#include "RayMath.h"
+
+class Ray {
 public:
 	Ray() = default;
 	Ray(const RayMath::Vec3& a, const RayMath::Vec3& b)

@@ -1,14 +1,10 @@
-export module World;
+#pragma once
 
-import <vector>;
-export import Sphere;
-export import Ray;
-export import RayMath;
-export import RayCamera;
-export import LambertianMaterial;
-export import MetalMaterial;
+#include <vector>
+#include "Sphere.h"
 
-export class World {
+class World
+{
 public:
 	World() = default;
 

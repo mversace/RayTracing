@@ -1,10 +1,8 @@
-module;
+#pragma once
 
 #include <windows.h>
 
-export module Renderer;
-
-export namespace RayRender
+namespace RayRender
 {
 	// ³õÊ¼»¯äÖÈ¾Æ÷ ÆÁÄ»³¤¿í ÆÁÄ»»º³å
 	void initRenderer(int w, int h, HWND hWnd);

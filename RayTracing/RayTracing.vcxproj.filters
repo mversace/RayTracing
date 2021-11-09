@@ -18,35 +18,37 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.ixx">
+    <ClCompile Include="Renderer.h">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="RayMath.ixx">
+    <ClCompile Include="RayMath.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="Ray.ixx">
+    <ClCompile Include="Ray.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="RayCamera.ixx">
+    <ClCompile Include="RayCamera.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.ixx">
+    <ClCompile Include="Sphere.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="World.ixx">
+    <ClCompile Include="World.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="Material.ixx">
+    <ClCompile Include="Material.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="LambertianMaterial.ixx">
+    <ClCompile Include="MetalMaterial.h">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="MetalMaterial.ixx">
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LambertianMaterial.h">
       <Filter>core</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>

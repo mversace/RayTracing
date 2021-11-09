@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -45,6 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <AllProjectBMIsArePublic>false</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,10 +55,10 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <EnableModules>true</EnableModules>
-      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <EnableModules>false</EnableModules>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
@@ -74,8 +75,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <EnableModules>true</EnableModules>
-      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <EnableModules>false</EnableModules>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <TranslateIncludes>false</TranslateIncludes>
     </ClCompile>
     <Link>
@@ -86,17 +87,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LambertianMaterial.ixx" />
+    <ClInclude Include="LambertianMaterial.h" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Material.ixx" />
-    <ClCompile Include="MetalMaterial.ixx" />
-    <ClCompile Include="Ray.ixx" />
-    <ClCompile Include="RayCamera.ixx" />
-    <ClCompile Include="RayMath.ixx" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MetalMaterial.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="RayCamera.h" />
+    <ClInclude Include="RayMath.h" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Renderer.ixx" />
-    <ClCompile Include="Sphere.ixx" />
-    <ClCompile Include="World.ixx" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,12 +1,12 @@
-module;
+#pragma once
 
 #include <math.h>
 #include <random>
 
-export module RayMath;
-
-export namespace RayMath {
-	class Vec3 {
+namespace RayMath
+{
+	class Vec3
+	{
 	public:
 		Vec3() = default;
 		Vec3(float e1, float e2, float e3)
@@ -47,7 +47,8 @@ export namespace RayMath {
 	inline Vec3 operator/=(Vec3& v1, float t) { v1.e[0] /= t; v1.e[1] /= t; v1.e[2] /= t; return v1; }
 
 	inline Vec3 operator-(const Vec3& v1) { return Vec3(-v1.e[0], -v1.e[1], -v1.e[2]); }
-	inline Vec3 operator*(const Vec3& u, const Vec3& v) {
+	inline Vec3 operator*(const Vec3& u, const Vec3& v)
+	{
 		return Vec3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 	}
 
@@ -61,11 +62,13 @@ export namespace RayMath {
 		return v - 2 * dot(v, n) * n;
 	}
 
-	float randF() {
+	float randF()
+	{
 		return static_cast<float>(rand()) / RAND_MAX;
 	}
 
-	Vec3 randomInUnitSphere() {
+	Vec3 randomInUnitSphere()
+	{
 		// 为了防止找到的点进入了内部
 		RayMath::Vec3 p;
 		do {
@@ -75,13 +78,15 @@ export namespace RayMath {
 		return p;
 	}
 
-	Vec3 randomUnitVector() {
+	Vec3 randomUnitVector()
+	{
 		auto p = randomInUnitSphere();
 		p.normalize();
 		return p;
 	}
 
-	Vec3 randomInHemisphere(const Vec3& normal) {
+	Vec3 randomInHemisphere(const Vec3& normal)
+	{
 		Vec3 p = randomInUnitSphere();
 		if (dot(p, normal) > 0.0) {
 			return p;

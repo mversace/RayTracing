@@ -1,20 +1,12 @@
-module;
-
-#include <windows.h>
-#include <math.h>
-#include <vector>
-#include <memory>
-#include <thread>
-#include <algorithm>
-#include <random>
-#include <chrono>
 #include <numeric>
+#include <chrono>
+#include <thread>
 
-module Renderer;
-import World;
-
-#pragma warning(disable:4005)
-#pragma warning(disable:5106)
+#include "Renderer.h"
+#include "World.h"
+#include "RayCamera.h"
+#include "LambertianMaterial.h"
+#include "MetalMaterial.h"
 
 
 RayMath::Vec3 rayColor(const Ray& r, const World& world, int depth)

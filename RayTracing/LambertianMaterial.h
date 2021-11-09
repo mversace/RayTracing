@@ -1,10 +1,9 @@
-export module LambertianMaterial;
+#pragma once
 
-export import Material;
-import Ray;
-import RayMath;
+#include "Material.h"
 
-export class LambertianMaterial : public Material {
+class LambertianMaterial : public Material
+{
 public:
 	LambertianMaterial(const RayMath::Vec3& a) : albedo(a)
 	{

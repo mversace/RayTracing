@@ -1,11 +1,11 @@
-export module Material;
+#pragma once
 
-import <memory>;
-import Ray;
-import RayMath;
+#include <memory>
+#include "Ray.h"
 
 class Material;
-export struct HitRec {
+struct HitRec
+{
 	float t;
 	RayMath::Vec3 p;
 	RayMath::Vec3 normal;
@@ -13,13 +13,15 @@ export struct HitRec {
 	std::shared_ptr<Material> matPtr;
 	bool frontFace;
 
-	inline void setFaceNormal(const Ray& r, const RayMath::Vec3& outWardNormal) {
+	inline void setFaceNormal(const Ray& r, const RayMath::Vec3& outWardNormal)
+	{
 		frontFace = RayMath::dot(r.direction(), outWardNormal) < 0;
 		normal = frontFace ? outWardNormal : -outWardNormal;
 	}
 };
 
-export class Material {
+class Material
+{
 public:
 	virtual bool scatter(
 		const Ray& rIn, const HitRec& rec, RayMath::Vec3& attenuation, Ray& scattered

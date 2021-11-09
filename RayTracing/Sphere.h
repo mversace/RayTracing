@@ -1,11 +1,11 @@
-export module Sphere;
-import <math.h>;
-import <memory>;
-import Ray;
-import RayMath;
-import Material;
+#pragma once
 
-export class Sphere {
+#include <math.h>
+#include <memory>
+#include "Material.h"
+
+class Sphere
+{
 public:
 	Sphere(const RayMath::Vec3& center, float radius, std::shared_ptr<Material> m)
 	{

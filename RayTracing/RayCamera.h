@@ -1,8 +1,9 @@
-export module RayCamera;
-import Ray;
-import RayMath;
+#pragma once
 
-export class Camera {
+#include "Ray.h"
+
+class Camera
+{
 public:
 	Camera() = default;
 
