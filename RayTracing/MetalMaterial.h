@@ -10,7 +10,7 @@ public:
 
 	}
 
-	virtual bool scatter( const Ray& rIn, const HitRec& rec, RayMath::Vec3& attenuation, Ray& scattered ) const override
+	bool scatter( const Ray& rIn, const HitRec& rec, RayMath::Vec3& attenuation, Ray& scattered ) const override
 	{
 		auto t = rIn.direction();
 		t.normalize();

@@ -51,6 +51,10 @@ namespace RayMath
 	{
 		return Vec3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 	}
+	inline Vec3 operator/(Vec3& v1, float t)
+	{
+		return Vec3(v1.e[0] / t, v1.e[1] / t, v1.e[2] / t);
+	}
 
 	inline float dot(const Vec3& v1, const Vec3& v2)
 	{
@@ -60,6 +64,14 @@ namespace RayMath
 	Vec3 reflect(const Vec3& v, const Vec3& n)
 	{
 		return v - 2 * dot(v, n) * n;
+	}
+
+	Vec3 refract(const Vec3& uv, const Vec3& n, float e)
+	{
+		auto t = fmin(dot(-uv, n), 1.0f);
+		auto rOutPerp = e * (uv + t * n);
+		auto rOutParallel = -sqrt(fabs(1.0f - rOutPerp.squaredLength())) * n;
+		return rOutPerp + rOutParallel;
 	}
 
 	float randF()

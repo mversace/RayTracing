@@ -7,6 +7,7 @@
 #include "RayCamera.h"
 #include "LambertianMaterial.h"
 #include "MetalMaterial.h"
+#include "DielectricMaterial.h"
 
 
 RayMath::Vec3 rayColor(const Ray& r, const World& world, int depth)
@@ -48,6 +49,7 @@ namespace RayRender
 	constexpr int threadCount = 12;
 	// 是否关闭线程
 	bool isShut = false;
+	int threadState[threadCount] = { 0 };
 
 
 	HDC g_tempDC = nullptr;
@@ -62,6 +64,8 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 {
 	g_width = w;
 	g_height = h;
+
+	camera.init(90.0f, float(w) / float(h));
 
 	// 1. 创建一个屏幕缓冲
 	// 1.1 创建一个与当前设备兼容的DC
@@ -82,15 +86,11 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
 
 	// 初始化场景
-	auto material_ground = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.8f, 0.8f, 0.0f));
-	auto material_center = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.7f, 0.3f, 0.3f));
-	auto material_left = std::make_shared<MetalMaterial>(RayMath::Vec3(0.8f, 0.8f, 0.8f), 0.3f);
-	auto material_right = std::make_shared<MetalMaterial>(RayMath::Vec3(0.8f, 0.6f, 0.2f), 1.0f);
-
-	world.addObject(Sphere(RayMath::Vec3(0.0f, -100.5f, 1.0f), 100.0f, material_ground));
-	world.addObject(Sphere(RayMath::Vec3(0.0f, 0.0f, 1.0f), 0.5f, material_center));
-	world.addObject(Sphere(RayMath::Vec3(-1.0f, 0.0f, 1.0f), 0.5f, material_left));
-	world.addObject(Sphere(RayMath::Vec3(1.0f, 0.0f, 1.0f), 0.5f, material_right));
+	auto material_left = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.0f, 0.0f, 1.0f));
+	auto material_right = std::make_shared<LambertianMaterial>(RayMath::Vec3(1.0f, 0.0f, 0.0f));
+	auto R = cos(3.141592653f / 4);
+	world.addObject(Sphere(RayMath::Vec3(-R, 0.0f, 1.0f), R, material_left));
+	world.addObject(Sphere(RayMath::Vec3(R, 0.0f, 1.0f), R, material_right));
 
 	// 起个线程开始光线追踪
 	for (int i = 0; i < threadCount; ++i) {
@@ -133,11 +133,23 @@ void RayRender::renderer(int threadIdx)
 
 		g_frameBuff[curIdx] = rgbtRed << 16 | rgbtGreen << 8 | rgbtBlue;
 	}
+
+	threadState[threadIdx] = 1;
 }
 
 void RayRender::shutDown()
 {
 	isShut = true;
+	bool isStop = false;
+	while (!isStop) {
+		isStop = true;
+		for (int i = 0; i < threadCount; ++i) {
+			if (threadState[i] == 0) {
+				isStop = false;
+			}
+		}
+	}
+
 	if (g_tempDC)
 	{
 		if (g_oldBm)

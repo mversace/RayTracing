@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DielectricMaterial.h" />
     <ClInclude Include="LambertianMaterial.h" />
     <ClCompile Include="main.cpp" />
     <ClInclude Include="Material.h" />

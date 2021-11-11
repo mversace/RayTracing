@@ -18,36 +18,39 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.h">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="RayMath.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="Ray.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="RayCamera.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="Sphere.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="World.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.h">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="MetalMaterial.h">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LambertianMaterial.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="MetalMaterial.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCamera.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="RayMath.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="DielectricMaterial.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
