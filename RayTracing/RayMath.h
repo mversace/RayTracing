@@ -61,6 +61,13 @@ namespace RayMath
 		return v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2];
 	}
 
+	inline Vec3 cross(const Vec3& u, const Vec3& v)
+	{
+		return Vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
+					u.e[2] * v.e[0] - u.e[0] * v.e[2],
+					u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+	}
+
 	Vec3 reflect(const Vec3& v, const Vec3& n)
 	{
 		return v - 2 * dot(v, n) * n;
