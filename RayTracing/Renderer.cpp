@@ -58,6 +58,7 @@ namespace RayRender
 	unsigned int* g_frameBuff = nullptr;
 
 	void renderer(int threadIdx);
+	World makeWorld();
 }
 
 void RayRender::initRenderer(int w, int h, HWND hWnd)
@@ -65,16 +66,16 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	g_width = w;
 	g_height = h;
 
-	RayMath::Vec3 lookFrom(1.0f, 3.0f, 0.0f);
-	RayMath::Vec3 lookAt(0.0f, 0.0f, 1.0f);
+	RayMath::Vec3 lookFrom(13.0f, 2.0f, -3.0f);
+	RayMath::Vec3 lookAt(0.0f, 0.0f, 0.0f);
 	camera.init(
 		lookFrom,
 		lookAt,
 		RayMath::Vec3(0.0f, 1.0f, 0.0f),
 		50.0f,
 		float(w) / float(h),
-		2.0f,
-		(lookFrom - lookAt).length()
+		0.1f,
+		10.0f
 	);
 
 	// 1. 创建一个屏幕缓冲
@@ -95,17 +96,7 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::shuffle(pixels.begin(), pixels.end(), std::default_random_engine(static_cast<unsigned int>(seed)));
 
-	// 初始化场景
-	auto material_ground = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.8f, 0.8f, 0.0f));
-	auto material_center = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.1f, 0.2f, 0.5f));
-	auto material_left = std::make_shared<DielectricMaterial>(1.5f);
-	auto material_right = std::make_shared<MetalMaterial>(RayMath::Vec3(0.8f, 0.6f, 0.2f), 0.0f);
-
-	world.addObject(Sphere(RayMath::Vec3(0.0f, -100.5f, 1.0f), 100.0f, material_ground));
-	world.addObject(Sphere(RayMath::Vec3(0.0f, 0.0f, 1.0f), 0.5f, material_center));
-	world.addObject(Sphere(RayMath::Vec3(-1.0f, 0.0f, 1.0f), 0.5f, material_left));
-	world.addObject(Sphere(RayMath::Vec3(-1.0f, 0.0f, 1.0f), -0.45f, material_left));
-	world.addObject(Sphere(RayMath::Vec3(1.0f, 0.0f, 1.0f), 0.5f, material_right));
+	world = makeWorld();
 	
 	// 起个线程开始光线追踪
 	for (int i = 0; i < threadCount; ++i) {
@@ -150,6 +141,50 @@ void RayRender::renderer(int threadIdx)
 	}
 
 	threadState[threadIdx] = 1;
+}
+
+World RayRender::makeWorld()
+{
+	World world;
+
+	auto groundMaterial = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.5f, 0.5f, 0.5f));
+	world.addObject(Sphere(RayMath::Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, groundMaterial));
+
+	for (int a = -11; a < 11; ++a) {
+		for (int b = -11; b < 11; ++b) {
+			auto chooseMat = RayMath::randF();
+			RayMath::Vec3 center(a + 0.9f * RayMath::randF(), 0.2f, b + 0.9f * RayMath::randF());
+
+			if ((center - RayMath::Vec3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
+				std::shared_ptr<Material> sphereMaterial;
+
+				if (chooseMat < 0.8f) {
+					auto albedo = RayMath::random() * RayMath::random();
+					sphereMaterial = std::make_shared<LambertianMaterial>(albedo);
+					world.addObject(Sphere(center, 0.2f, sphereMaterial));
+				} else if (chooseMat < 0.95f) {
+					auto albedo = RayMath::random(0.5f, 1.0f);
+					auto fuzz = RayMath::randF(0.0f, 0.5f);
+					sphereMaterial = std::make_shared<MetalMaterial>(albedo, fuzz);
+					world.addObject(Sphere(center, 0.2f, sphereMaterial));
+				} else {
+					sphereMaterial = std::make_shared<DielectricMaterial>(1.5f);
+					world.addObject(Sphere(center, 0.2f, sphereMaterial));
+				}
+			}
+		}
+	}
+
+	auto material1 = std::make_shared<DielectricMaterial>(1.5f);
+	world.addObject(Sphere(RayMath::Vec3(0.0f, 1.0f, 0.0f), 1.0f, material1));
+
+	auto material2 = std::make_shared<LambertianMaterial>(RayMath::Vec3(0.4f, 0.2f, 0.1f));
+	world.addObject(Sphere(RayMath::Vec3(-4.0f, 1.0f, 0.0f), 1.0f, material2));
+
+	auto material3 = std::make_shared<MetalMaterial>(RayMath::Vec3(0.7f, 0.6f, 0.5f), 0.0f);
+	world.addObject(Sphere(RayMath::Vec3(4.0f, 1.0f, 0.0f), 1.0f, material3));
+
+	return world;
 }
 
 void RayRender::shutDown()

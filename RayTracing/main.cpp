@@ -5,8 +5,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-    int width = 800;
-    int height = 600;
+    int width = 1200;
+    int height = 800;
 
     // 1 create win32 application
     // "https://docs.microsoft.com/zh-cn/previous-versions/visualstudio/visual-studio-2008/bb384843(v%3dvs.90)"
@@ -75,7 +75,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
         }
     }
 
-    RayRender::shutDown();
     return (int)msg.wParam;
 }
 
@@ -84,6 +83,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_DESTROY:
+        RayRender::shutDown();
         PostQuitMessage(0);
         break;
     default:

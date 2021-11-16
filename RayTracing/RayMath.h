@@ -92,6 +92,16 @@ namespace RayMath
 		return min + (max - min) * randF();
 	}
 
+	Vec3 random()
+	{
+		return Vec3(randF(), randF(), randF());
+	}
+
+	Vec3 random(float min, float max)
+	{
+		return Vec3(randF(min, max), randF(min, max), randF(min, max));
+	}
+
 	Vec3 randomInUnitSphere()
 	{
 		// 为了防止找到的点进入了内部
