@@ -86,6 +86,12 @@ namespace RayMath
 		return static_cast<float>(rand()) / RAND_MAX;
 	}
 
+	float randF(float min, float max)
+	{
+		// Returns a random real in [min,max).
+		return min + (max - min) * randF();
+	}
+
 	Vec3 randomInUnitSphere()
 	{
 		// 为了防止找到的点进入了内部
@@ -111,6 +117,15 @@ namespace RayMath
 			return p;
 		} else {
 			return -p;
+		}
+	}
+
+	Vec3 randomInUnitDisk()
+	{
+		while (true) {
+			auto p = Vec3(randF(-1.0f, 1.0f), randF(-1.0f, 1.0f), 0.0f);
+			if (p.squaredLength() >= 1) continue;
+			return p;
 		}
 	}
 }

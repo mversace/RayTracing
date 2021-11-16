@@ -65,12 +65,16 @@ void RayRender::initRenderer(int w, int h, HWND hWnd)
 	g_width = w;
 	g_height = h;
 
+	RayMath::Vec3 lookFrom(1.0f, 3.0f, 0.0f);
+	RayMath::Vec3 lookAt(0.0f, 0.0f, 1.0f);
 	camera.init(
-		RayMath::Vec3(-2.0f, 2.0f, -2.0f),
-		RayMath::Vec3(0.0f, 0.0f, 1.0f),
+		lookFrom,
+		lookAt,
 		RayMath::Vec3(0.0f, 1.0f, 0.0f),
-		90.0f,
-		float(w) / float(h)
+		50.0f,
+		float(w) / float(h),
+		2.0f,
+		(lookFrom - lookAt).length()
 	);
 
 	// 1. 创建一个屏幕缓冲
